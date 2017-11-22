@@ -1,0 +1,101 @@
+server:
+  port: 9999
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/prevention_test?useUnicode=true&characterEncoding=UTF-8
+    username: root
+    password: root
+    initialSize: 5
+    minIdle: 5
+    maxActive: 20
+    maxWait: 60000
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: SELECT 1 FROM DUAL
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    poolPreparedStatements: false
+    maxPoolPreparedStatementPerConnectionSize: -1
+    filters: stat,wall,slf4j
+    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMil=3000
+    useGlobalDataSourceStat: true
+  http:
+    multipart:
+      max-file-size: 5Mb
+      max-request-size: 5Mb
+  mvc:
+    throw-exception-if-no-handler-found: true # 当出现404时, 直接抛出异常
+  resources:
+    add-mappings: false # springboot不建立资源映射
+  output:
+    ansi:
+      enabled: always
+
+mybatis:
+  type-aliases-package: org.yan
+  mapper-locations: classpath:mappers/*.xml
+
+
+pagehelper:
+    helperDialect: mysql
+    reasonable: false
+    supportMethodsArguments: true
+    params: count=countSql
+
+mapper:
+    mappers:
+          - org.yan.base.repository.BaseMapper
+
+    not-empty: false
+
+#security:
+#  oauth2:
+#    resource:
+#      id: prevention_governance_resource
+#    client:
+#      id: prevention_governance_resource
+#      client-id: prevention_governance_client_id
+#      access-token-uri: http://127.0.0.1:${server.port}/oauth/token
+#      authorized-grant-types: password, refresh_token
+#      scope: read, write
+#      auto-approve-scopes: true
+#      authorities: POLICE, MASSES
+#      resource-ids: prevention_governance_resource
+#      access-token-validity-seconds: 0
+#      refresh-token-validity-seconds: 0
+#      authentication-scheme: header
+#      token-name: access_token
+#    authorization:
+#      check-token-access: isAuthenticated()
+#      token-key-access: permitAll()
+
+prevention:
+  oauth2:
+    resource-id: prevention_governance_resource
+    client-id: prevention_governance_client_id
+    client-secret: prevention_governance_client_secret
+    access-token-uri: http://127.0.0.1:${server.port}/oauth/token
+    check-token-uri: http://127.0.0.1:${server.port}/oauth/check_token
+    username-key: username
+    password-key: password
+
+file:
+  base:
+    server: http://127.0.0.1/
+    path: /data/www/
+    original: images/
+    thumbnail: thumbnail/
+log:
+  context: prevention-governance
+  path: /Users/chenjiahai/logs
+
+# 社区有我访问地址和端口配置
+community:
+  server:
+    schema: http://
+    domain: 127.0.0.1
+    port: 8888
+    path: ${community.server.schema}${community.server.domain}:${community.server.port}
